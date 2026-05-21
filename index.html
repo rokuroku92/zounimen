@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>揍你們</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell" aria-labelledby="game-title">
+      <header class="hud">
+        <div class="brand-block">
+          <span class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" role="img">
+              <path d="M18 30c-4 0-7 3-7 7v3c0 8 7 14 15 14h12c10 0 18-8 18-18v-3c0-4-3-7-7-7h-2v-6c0-3-2-5-5-5s-5 2-5 5v6h-4V15c0-3-2-5-5-5s-5 2-5 5v11h-4V19c0-3-2-5-5-5s-5 2-5 5v11h9Z" />
+              <path d="M21 38h23" />
+            </svg>
+          </span>
+          <div>
+            <h1 id="game-title">揍你們</h1>
+            <p>Comic Beat Lab</p>
+          </div>
+        </div>
+
+        <div class="stat-grid" aria-label="遊戲狀態">
+          <div class="stat-cell">
+            <span>分數</span>
+            <strong id="score">0</strong>
+          </div>
+          <div class="stat-cell">
+            <span>連擊</span>
+            <strong id="combo">0</strong>
+          </div>
+          <div class="stat-cell">
+            <span>倒數</span>
+            <strong id="timeLeft">45</strong>
+          </div>
+          <div class="stat-cell">
+            <span>最佳</span>
+            <strong id="bestScore">0</strong>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-button" id="soundToggle" type="button" title="切換音效" aria-label="切換音效">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+              <path d="M16 8.5c1 .9 1.5 2.1 1.5 3.5S17 14.6 16 15.5" />
+              <path d="M18.5 6c1.8 1.6 2.8 3.6 2.8 6s-1 4.4-2.8 6" />
+            </svg>
+          </button>
+          <button class="icon-button" id="resetButton" type="button" title="重新開始" aria-label="重新開始">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 12a8 8 0 1 1-2.3-5.7" />
+              <path d="M20 4v6h-6" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="arena" aria-label="揍你們互動舞台">
+        <div class="stage" id="stage">
+          <svg class="backdrop" viewBox="0 0 1200 640" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="floorGrad" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#21c6b7" />
+                <stop offset="0.48" stop-color="#ffe45e" />
+                <stop offset="1" stop-color="#ff6b57" />
+              </linearGradient>
+              <pattern id="dotGrid" width="28" height="28" patternUnits="userSpaceOnUse">
+                <circle cx="3" cy="3" r="2" fill="#223047" opacity="0.14" />
+              </pattern>
+            </defs>
+            <rect width="1200" height="640" fill="#f7fbf6" />
+            <rect width="1200" height="640" fill="url(#dotGrid)" />
+            <path d="M0 104h1200v176c-93-24-184-36-273-34-116 3-210 34-322 37-119 4-216-24-341-31-96-5-184 5-264 30V104Z" fill="#6d5dfc" opacity="0.16" />
+            <path d="M0 398c169-54 333-70 493-47 140 19 251 73 401 72 102 0 204-25 306-75v292H0V398Z" fill="url(#floorGrad)" />
+            <path d="M132 155 54 92m157 125L96 217m909-58 96-67m-172 126 136 8M566 78l-24 118m124-112 16 113" stroke="#223047" stroke-width="10" stroke-linecap="round" opacity="0.18" />
+            <path d="M204 429c168 34 311 48 430 42 118-6 237-31 357-75" fill="none" stroke="#223047" stroke-width="8" stroke-linecap="round" opacity="0.18" />
+          </svg>
+
+          <div class="meter-rail" aria-label="火力">
+            <span>火力</span>
+            <div class="heat-track"><span id="heatFill"></span></div>
+          </div>
+
+          <div class="target-row" id="targetRow">
+            <button class="target" type="button" data-index="0" aria-label="壓力目標">
+              <svg class="target-svg" viewBox="0 0 220 260" aria-hidden="true">
+                <path class="shadow" d="M45 238c22 12 108 13 134 0 14-7 11-22-14-28-31-8-91-7-120 2-21 7-23 18 0 26Z" />
+                <path class="body body-a" d="M73 75c-20 20-30 55-25 92 5 41 34 75 65 76 35 1 63-35 68-76 4-36-9-73-33-92-24-20-54-20-75 0Z" />
+                <path class="strap" d="M73 75c20 16 55 18 75 0" />
+                <circle class="eye" cx="91" cy="139" r="8" />
+                <circle class="eye" cx="134" cy="139" r="8" />
+                <path class="mouth" d="M91 180c17 13 42 12 55-2" />
+                <path class="spark" d="M67 55 52 29l31 10 18-28 8 35 34-5-25 24" />
+              </svg>
+              <span class="target-name">壓力</span>
+              <span class="target-meter"><span></span></span>
+            </button>
+
+            <button class="target" type="button" data-index="1" aria-label="拖延目標">
+              <svg class="target-svg" viewBox="0 0 220 260" aria-hidden="true">
+                <path class="shadow" d="M45 238c22 12 108 13 134 0 14-7 11-22-14-28-31-8-91-7-120 2-21 7-23 18 0 26Z" />
+                <path class="body body-b" d="M54 119c2-38 28-73 62-78 36-5 73 25 82 65 13 58-17 125-65 136-46 10-83-29-79-123Z" />
+                <path class="strap" d="M65 103c35 20 78 19 116-3" />
+                <circle class="eye" cx="91" cy="145" r="8" />
+                <circle class="eye" cx="138" cy="142" r="8" />
+                <path class="mouth" d="M93 181c14-9 38-9 52 2" />
+                <path class="spark" d="M143 51 158 19l11 36 34 1-28 19 12 33-31-20-29 22 9-36-30-18Z" />
+              </svg>
+              <span class="target-name">拖延</span>
+              <span class="target-meter"><span></span></span>
+            </button>
+
+            <button class="target" type="button" data-index="2" aria-label="煩躁目標">
+              <svg class="target-svg" viewBox="0 0 220 260" aria-hidden="true">
+                <path class="shadow" d="M45 238c22 12 108 13 134 0 14-7 11-22-14-28-31-8-91-7-120 2-21 7-23 18 0 26Z" />
+                <path class="body body-c" d="M57 91c24-39 82-45 118-11 28 27 34 76 16 113-17 36-54 57-91 48-50-12-71-105-43-150Z" />
+                <path class="strap" d="M62 97c35 26 81 28 116 4" />
+                <circle class="eye" cx="88" cy="147" r="8" />
+                <circle class="eye" cx="136" cy="147" r="8" />
+                <path class="mouth" d="M91 184c19 5 41 4 56-4" />
+                <path class="spark" d="M51 83 22 78l25-17-12-27 29 9 18-24 4 31 31 2-28 15 11 29-27-15Z" />
+              </svg>
+              <span class="target-name">煩躁</span>
+              <span class="target-meter"><span></span></span>
+            </button>
+          </div>
+
+          <div class="glove glove-left" aria-hidden="true"></div>
+          <div class="glove glove-right" aria-hidden="true"></div>
+          <div class="impact-layer" id="impactLayer" aria-hidden="true"></div>
+          <div class="round-banner" id="roundBanner" role="status" aria-live="polite">Ready</div>
+        </div>
+      </section>
+
+      <footer class="control-strip" aria-label="出拳控制">
+        <button class="strike-button" type="button" data-strike="jab">
+          <span class="strike-icon" aria-hidden="true">‹</span>
+          <span>左拳</span>
+        </button>
+        <button class="strike-button primary" type="button" data-strike="hook">
+          <span class="strike-icon" aria-hidden="true">◆</span>
+          <span>重拳</span>
+        </button>
+        <button class="strike-button" type="button" data-strike="uppercut">
+          <span class="strike-icon" aria-hidden="true">⌃</span>
+          <span>上勾</span>
+        </button>
+      </footer>
+
+      <p class="sr-only" id="liveStatus" aria-live="polite"></p>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
