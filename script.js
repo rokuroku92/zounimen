@@ -170,6 +170,40 @@ function resetComboTimer() {
   }, 1300);
 }
 
+function bindTapAction(element, action) {
+  let lastTouchActionAt = 0;
+
+  element.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse") return;
+
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+
+    lastTouchActionAt = Date.now();
+    action(event);
+  });
+
+  element.addEventListener("click", (event) => {
+    if (Date.now() - lastTouchActionAt < 450) {
+      event.preventDefault();
+      return;
+    }
+
+    action(event);
+  });
+}
+
+document.addEventListener(
+  "dblclick",
+  (event) => {
+    if (event.target instanceof Element && event.target.closest(".app-shell") && event.cancelable) {
+      event.preventDefault();
+    }
+  },
+  { passive: false },
+);
+
 function beginRound() {
   if (state.running || state.timeLeft <= 0) return;
 
@@ -294,18 +328,18 @@ function resetGame() {
 }
 
 elements.targets.forEach((target, index) => {
-  target.addEventListener("click", () => strikeTarget(index, "hook"));
+  bindTapAction(target, () => strikeTarget(index, "hook"));
 });
 
 elements.strikeButtons.forEach((button) => {
-  button.addEventListener("click", () => {
+  bindTapAction(button, () => {
     strikeTarget(state.activeIndex, button.dataset.strike);
   });
 });
 
-elements.resetButton.addEventListener("click", resetGame);
+bindTapAction(elements.resetButton, resetGame);
 
-elements.soundToggle.addEventListener("click", () => {
+bindTapAction(elements.soundToggle, () => {
   state.sound = !state.sound;
   elements.soundToggle.classList.toggle("is-muted", !state.sound);
 });
